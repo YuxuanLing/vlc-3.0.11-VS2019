@@ -1,9 +1,9 @@
-prefix=/usr/local
-exec_prefix=/usr/local
+prefix=G:/work/vlc-3.0.11-VS2019/contrib/libprojectM/projectM-2.0.1/out/install/x64-Debug
+exec_prefix=G:/work/vlc-3.0.11-VS2019/contrib/libprojectM/projectM-2.0.1/out/install/x64-Debug
 libdir=
-includedir=/usr/local/include
-pkgdatadir=/usr/local/share/projectM
-sysconfdir=/usr/local/share/projectM
+includedir=G:/work/vlc-3.0.11-VS2019/contrib/libprojectM/projectM-2.0.1/out/install/x64-Debug/include
+pkgdatadir=G:/work/vlc-3.0.11-VS2019/contrib/libprojectM/projectM-2.0.1/out/install/x64-Debug/Resources
+sysconfdir=G:/work/vlc-3.0.11-VS2019/contrib/libprojectM/projectM-2.0.1/out/install/x64-Debug/Resources
 
 Name: libprojectM
 Version: 2.0.0

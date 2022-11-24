@@ -62,5 +62,13 @@
     <ClCompile Include="..\..\..\vlc-3.0.11\modules\video_filter\deinterlace\common.c">
       <Filter>Source Files\modules\video_filter\deinterlace</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\log_level_time.c">
+      <Filter>Source Files\modules\hw\d3d9</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\log_level_time.h">
+      <Filter>Source Files\modules\hw\d3d9</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

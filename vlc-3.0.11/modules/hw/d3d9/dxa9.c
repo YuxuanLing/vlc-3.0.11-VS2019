@@ -41,7 +41,7 @@
 #include <windows.h>
 #include <d3d9.h>
 #include "../../video_chroma/d3d9_fmt.h"
-
+#include "log_level_time.h"
 struct filter_sys_t {
     /* GPU to CPU */
     copy_cache_t      cache;
@@ -84,7 +84,7 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
     D3DLOCKED_RECT lock;
     if (!GetLock(p_filter, p_sys->surface, &lock, &desc))
         return;
-
+    LOG_WRITE("c:\\dump\\dxa9.txt", "start DXA9_YV12");
     if (desc.Format == MAKEFOURCC('Y','V','1','2') ||
         desc.Format == MAKEFOURCC('I','M','C','3')) {
 
@@ -132,6 +132,7 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
             lock.Pitch,
             lock.Pitch,
         };
+        LOG_WRITE("c:\\dump\\dxa9.txt", "before Copy420_SP_to_P");
         if (desc.Format == MAKEFOURCC('N','V','1','2'))
             Copy420_SP_to_P(dst, plane, pitch,
                             __MIN(desc.Height, src->format.i_y_offset + src->format.i_visible_height),
@@ -140,13 +141,13 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
             Copy420_16_SP_to_P(dst, plane, pitch,
                               __MIN(desc.Height, src->format.i_y_offset + src->format.i_visible_height),
                               6, p_copy_cache);
-
+        LOG_WRITE("c:\\dump\\dxa9.txt", "after Copy420_SP_to_P");
         if (dst->format.i_chroma != VLC_CODEC_I420 && dst->format.i_chroma != VLC_CODEC_I420_10L)
             picture_SwapUV(dst);
     } else {
         msg_Err(p_filter, "Unsupported DXA9 conversion from 0x%08X to YV12", desc.Format);
     }
-
+    LOG_WRITE("c:\\dump\\dxa9.txt", "end  DXA9_YV12");
     /* */
     IDirect3DSurface9_UnlockRect(p_sys->surface);
 }

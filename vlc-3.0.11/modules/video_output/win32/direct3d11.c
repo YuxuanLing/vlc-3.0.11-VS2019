@@ -52,7 +52,7 @@
 #include "../../video_chroma/d3d11_fmt.h"
 #include "d3d11_quad.h"
 #include "d3d11_shaders.h"
-
+#include "log_level_time.h"
 #include "common.h"
 
 DEFINE_GUID(GUID_SWAPCHAIN_WIDTH,  0xf1b59347, 0x1643, 0x411a, 0xad, 0x6b, 0xc7, 0x80, 0x17, 0x7a, 0x06, 0xb6);
@@ -862,7 +862,7 @@ static void Manage(vout_display_t *vd)
 static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
-
+    LOG_WRITE("c:\\dump\\tstlog.txt","Start Prepare");
     if (sys->picQuad.formatInfo->formatTexture == DXGI_FORMAT_UNKNOWN)
     {
         D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -893,12 +893,14 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
         if (b_mapped)
         {
+            LOG_WRITE("c:\\dump\\tstlog.txt", "----%s----", "Start Plane Copy");
             for (i = 0; i < picture->i_planes; i++)
                 plane_CopyPixels(&planes[i], &picture->p[i]);
-
+            LOG_WRITE("c:\\dump\\tstlog.txt", "----%s----", "End   Plane Copy");
             for (i = 0; i < picture->i_planes; i++)
                 ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, sys->stagingSys.resource[i], 0);
         }
+        LOG_WRITE("c:\\dump\\tstlog.txt", "----%s----", "End All Plane Copy");
     }
     else
     {
@@ -981,14 +983,14 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
             IDXGISwapChain4_SetHDRMetaData(sys->dxgiswapChain4, DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
         }
     }
-
+    LOG_WRITE("c:\\dump\\tstlog.txt", "Before Clean RT");
     FLOAT blackRGBA[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     ID3D11DeviceContext_ClearRenderTargetView(sys->d3d_dev.d3dcontext, sys->d3drenderTargetView, blackRGBA);
 
     /* no ID3D11Device operations should come here */
-
+    LOG_WRITE("c:\\dump\\tstlog.txt", "End Clean RT");
     ID3D11DeviceContext_ClearDepthStencilView(sys->d3d_dev.d3dcontext, sys->d3ddepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+    LOG_WRITE("c:\\dump\\tstlog.txt", "End ClearDepthStencilView");
     /* Render the quad */
     if (!is_d3d11_opaque(picture->format.i_chroma) || sys->legacy_shader)
         D3D11_RenderQuad(&sys->d3d_dev, &sys->picQuad, sys->stagingSys.resourceView, sys->d3drenderTargetView);
@@ -1021,6 +1023,7 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
     if (is_d3d11_opaque(picture->format.i_chroma))
         d3d11_device_unlock( &sys->d3d_dev );
+    LOG_WRITE("c:\\dump\\tstlog.txt", "End Prepare");
 }
 
 static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)

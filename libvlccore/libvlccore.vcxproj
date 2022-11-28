@@ -287,6 +287,7 @@
     <ClCompile Include="..\vlc-3.0.11\src\video_output\display.c" />
     <ClCompile Include="..\vlc-3.0.11\src\video_output\inhibit.c" />
     <ClCompile Include="..\vlc-3.0.11\src\video_output\interlacing.c" />
+    <ClCompile Include="..\vlc-3.0.11\src\video_output\log_level_time.c" />
     <ClCompile Include="..\vlc-3.0.11\src\video_output\opengl.c" />
     <ClCompile Include="..\vlc-3.0.11\src\video_output\snapshot.c" />
     <ClCompile Include="..\vlc-3.0.11\src\video_output\video_epg.c" />

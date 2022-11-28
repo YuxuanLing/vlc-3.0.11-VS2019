@@ -54,7 +54,7 @@
 #include "display.h"
 #include "window.h"
 #include "../misc/variables.h"
-
+#include "log_level_time.h"
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -970,7 +970,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
     vout_display_t *vd = vout->p->display.vd;
 
     picture_t *torender = picture_Hold(vout->p->displayed.current);
-
+    LOG_WRITE("c:\\dump\\video_output.txt", "Start Output");
     vout_chrono_Start(&vout->p->render);
 
     vlc_mutex_lock(&vout->p->filter.lock);
@@ -993,7 +993,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
     else
         render_subtitle_date = filtered->date > 1 ? filtered->date : mdate();
     mtime_t render_osd_date = mdate(); /* FIXME wrong */
-
+    LOG_WRITE("c:\\dump\\video_output.txt", "after mdate");
     /*
      * Get the subpicture to be displayed
      */
@@ -1059,6 +1059,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
                                       &vd->source,
                                       render_subtitle_date, render_osd_date,
                                       do_snapshot);
+    LOG_WRITE("c:\\dump\\video_output.txt", "after spu_Render");
     /*
      * Perform rendering
      *
@@ -1129,17 +1130,17 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
         if (snap_pic != todisplay)
             picture_Release(snap_pic);
     }
-
+    LOG_WRITE("c:\\dump\\video_output.txt", "before vout_UpdateDisplaySourceProperties");
     /* Render the direct buffer */
     vout_UpdateDisplaySourceProperties(vd, &todisplay->format);
-
+    LOG_WRITE("c:\\dump\\video_output.txt", "before vout_FilterDisplay");
     todisplay = vout_FilterDisplay(vd, todisplay);
     if (todisplay == NULL) {
         if (subpic != NULL)
             subpicture_Delete(subpic);
         return VLC_EGENERIC;
     }
-
+    LOG_WRITE("c:\\dump\\video_output.txt", "before vout_display_Prepare");
     if (sys->display.use_dr) {
         vout_display_Prepare(vd, todisplay, subpic);
     } else {
@@ -1178,7 +1179,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
     vout_display_Display(vd, todisplay, subpic);
 
     vout_statistic_AddDisplayed(&vout->p->statistic, 1);
-
+    LOG_WRITE("c:\\dump\\video_output.txt", "End Output");
     return VLC_SUCCESS;
 }
 

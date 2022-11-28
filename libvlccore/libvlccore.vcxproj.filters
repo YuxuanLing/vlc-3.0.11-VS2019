@@ -489,6 +489,9 @@
     <ClCompile Include="..\vlc-3.0.11\src\misc\update_crypto.c">
       <Filter>Source Files\src\misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\vlc-3.0.11\src\video_output\log_level_time.c">
+      <Filter>Source Files\src\video_output</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="libvlccore.def">

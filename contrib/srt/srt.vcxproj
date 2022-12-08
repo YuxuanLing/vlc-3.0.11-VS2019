@@ -168,10 +168,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);WIN32;USE_GNUTLS;SRT_VERSION="1.2.3";HAI_PATCH;_CRT_SECURE_NO_WARNINGS;HAVE_STRUCT_TIMESPEC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)include/contrib;./srt-1.2.3/common/win;./srt-1.2.3/common;$(SolutionDir)include/util;./srt-1.2.3/haicrypt;$(SolutionDir)include/contrib/pthread;$(SolutionDir)include/mingw32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

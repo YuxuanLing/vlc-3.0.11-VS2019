@@ -70,7 +70,8 @@
 #include <vlc_vlm.h>
 
 #include <assert.h>
-
+#include "csf/logger/CSFLogger.h"
+#include "csf/logger/CSFLog.h"
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -162,7 +163,9 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
         goto error;
 
     vlc_LogInit(p_libvlc);
-
+    CSFLogger_initialize("c:\\dump\\Log\\vlc.log");
+    CSFLogger* rLogger = CSFLogger_getRootLogger();
+    CSFLogDebug(rLogger, "Start Logging vlc ....");
     /*
      * Support for gettext
      */

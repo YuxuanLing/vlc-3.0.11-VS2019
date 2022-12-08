@@ -1,0 +1,225 @@
+#######################################################################
+# csflogger library build script
+#######################################################################
+
+import os
+
+Import('env')
+
+envLocal = env.Clone()
+
+envLocal.Append(CPPPATH = ['../../include'])
+envLocal.Append(CPPPATH = ['.'])
+
+csfloggerRoot = os.getcwd()
+
+_SDKNAMES = {
+    'iossimulator': 'iPhoneSimulator',
+    'ios': 'iPhoneOS'
+
+}
+
+sources = []
+sources.append('CSFLog.cpp')
+sources.append('VersionInfo.cpp')
+sources.append('logger_utils.cpp')
+
+lib_path = []
+
+macsdk_include = ''
+if envLocal.TargetPlatform() == 'macosx':
+
+    MAC_SDKROOT = 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX'+env['macosx_version']+'.sdk'
+
+    sources.append(os.path.join('CSFLogger.cpp'))
+    
+    envLocal.Append(LIBPATH = [envLocal.GetBuildDirectory('bin')])
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), MAC_SDKROOT,'System/Library/Frameworks/Foundation.framework/Versions/C/Headers')])
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), MAC_SDKROOT,'System/Library/Frameworks/CoreFoundation.framework/Versions/A/Headers')])
+
+    envLocal.Append(CPPFLAGS = ['-fno-rtti'])
+    envLocal.Append(CPPFLAGS = ['-fno-common'])
+    envLocal.Append(CPPFLAGS = ['-Wshorten-64-to-32'])
+    envLocal.set_warning_flags()
+    envLocal.Append(CPPDEFINES = ['OSX', 'UNICODE', '_UNICODE'])
+    envLocal.Append(LINKFLAGS = ['-framework','CoreFoundation','-framework','Foundation'])
+    envLocal.Append(LIBS = ['apr-1','aprutil-1'])
+
+    if envLocal['DEBUG']:
+        envLocal.Append(CPPFLAGS = ['-O0'])
+        envLocal.Append(CPPFLAGS = ['-g'])
+        envLocal.Append(CPPFLAGS = ['-ggdb'])
+        envLocal.Append(CPPDEFINES = ['DEBUG'])
+    else:
+        envLocal.Append(CPPFLAGS = ['-Os'])
+        envLocal.Append(CPPDEFINES = ['NDEBUG'])
+
+
+if envLocal.TargetPlatform() in ['ios','iossimulator']:
+    IOS_SDKROOT = 'Platforms/'+_SDKNAMES[envLocal.TargetPlatform()]+'.platform/Developer/SDKs/'+_SDKNAMES[envLocal.TargetPlatform()]+envLocal['ios_version']+'.sdk/'
+
+    sources.append(os.path.join('ios','CSFLogger.mm'))
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), IOS_SDKROOT,'usr/include/c++/4.2.1/backward')])
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), IOS_SDKROOT,'usr/include')]) 
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), IOS_SDKROOT,'usr/include/c++/4.2.1')])
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), IOS_SDKROOT,'System/Library/Frameworks/Foundation.framework/Headers')])
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), IOS_SDKROOT,'System/Library/Frameworks/CoreFoundation.framework/Versions/A/Headers')])
+    envLocal.Append(CPPPATH = [os.path.join(env.XcodeDeveloperPath(), IOS_SDKROOT,'System/Library/Frameworks/CoreFoundation.framework/Headers')])
+ 
+    envLocal.Append(LINKFLAGS = ['-framework','CoreFoundation','-framework','Foundation'])
+    envLocal.Append(CPPFLAGS = ['-fobjc-abi-version=2','-fobjc-legacy-dispatch'])
+
+if envLocal.TargetPlatformMatches('ANDROID'):
+    sources.append(os.path.join('android','CSFLogger.cpp'))
+    sources.append(os.path.join('android','CSFLogHelper.cpp'))
+
+    if envLocal['DEBUG']:
+        envLocal.Append(CPPFLAGS = ['-O0'])
+        envLocal.Append(CPPFLAGS = ['-g'])
+        envLocal.Append(CPPFLAGS = ['-ggdb'])
+        envLocal.Append(CPPDEFINES = ['DEBUG'])
+    else:
+        envLocal.Append(CPPDEFINES = ['NDEBUG'])
+        envLocal.Append(CPPFLAGS = ['-Wall'])
+        envLocal.Append(CPPFLAGS = ['-DANDROID'])
+        envLocal.Append(CPPFLAGS = ['-D__ANDROID__'])
+        envLocal.Append(LINKFLAGS = [])
+
+    envLocal.Append(LIBS = ['log', 'pthread'])
+
+
+if envLocal.TargetPlatform() == "windows":
+    
+    sources.append(os.path.join('CSFLogger.cpp'))
+
+    if envLocal.TargetPlatform() == 'windows':
+        # Suppress DLL warnings
+        envLocal.AppendUnique(CXXFLAGS = ['/W3', '/wd4251', '/wd4275'])
+        # Treat warnings as errors.  Only for vs2013 because here I can't
+        # make /wd4251 and /wd4275 suppression work for vs2008.
+        # (Maybe because of the /W3 later in the command?)
+        if 'msvs' in env and env['msvs'] == 'vs2013':
+            envLocal.AppendUnique('/WX')
+        # Disabling for pre-compiled. Produces  error C2855:
+        # command-line option '/Zi' inconsistent with precompiled header
+        #envLocal.Append(CPPFLAGS = ['/Zi'])
+        envLocal.Append(CPPDEFINES = ['_DLL', 'CSF_LOGGER_EXPORTS'])
+        envLocal.Append(LINKFLAGS = ['/DEBUG'])
+
+        if envLocal['DEBUG']:
+            envLocal.Append(CPPFLAGS = ['/RTC1'])
+            envLocal.Append(CPPFLAGS = ['/Od'])
+            envLocal.Append(CPPFLAGS = ['/Gm'])
+            envLocal.Append(CPPDEFINES = ['DEBUG'])
+        else:
+            envLocal.Append(CPPDEFINES = ['NDEBUG'])
+        
+        envLocal.Append(LIBS = [
+                            'ws2_32.lib', 
+                            'DnsAPI.lib', 
+                            'kernel32.lib', 
+                            'user32.lib', 
+                            'gdi32.lib', 
+                            'winspool.lib', 
+                            'comdlg32.lib', 
+                            'advapi32.lib', 
+                            'shell32.lib', 
+                            'ole32.lib', 
+                            'oleaut32.lib',
+                            'uuid.lib', 
+                            'odbc32.lib', 
+                            'odbccp32.lib', 
+                            'psapi.lib'])
+
+if envLocal.TargetPlatform() in ['linux', 'synergylite']:
+    
+    sources.append(os.path.join('CSFLogger.cpp'))
+    
+    if not envLocal.get('CSFLOGGER_NO_RPATH', False):
+        envLocal.Append(LINKFLAGS = '-Wl,-rpath,' + envLocal.GetBuildDirectory('bin'))
+    envLocal.Append(LINKFLAGS = '-Wl,-soname,${SHLIBPREFIX}csflogger${SHLIBSUFFIX}')
+    envLocal.Append(LIBPATH = [envLocal.GetBuildDirectory('bin')])
+    envLocal.Append(LIBS = [
+                        'pthread',
+                        'resolv'])
+
+
+
+if envLocal.TargetPlatform() == 'windows':
+    
+    sharedLib = envLocal.SharedLibrary("csflogger", sources)
+
+    linkerLib = File(envLocal.GetBuildDirectory('sharedlib',"csflogger.lib", False))
+    
+    useDllsTarget = sharedLib[0]
+    
+    libTarget = sharedLib
+   
+elif envLocal.TargetPlatform() in ['linux', 'synergylite']:
+    libTarget = envLocal.SharedLibrary("csflogger", sources)
+    linkerLib = ['csflogger']
+    lib_path = [envLocal.GetBuildDirectory('sharedlib')]
+    useDllsTarget = linkerLib[0]
+
+elif env.TargetPlatform() in [ "macosx"]:
+    envLocal.Append(LINKFLAGS =  '-install_name @rpath/libcsflogger.dylib')
+    linkerLib = envLocal.SharedLibrary("csflogger", sources)
+    libTarget = linkerLib
+    useDllsTarget = linkerLib[0]
+
+else:
+    linkerLib = envLocal.StaticLibrary('csflogger', sources)
+    libTarget = linkerLib
+    useDllsTarget = [] #There are no useLibs for non windows static libs
+
+if envLocal['DEBUG']:
+    Alias('csflogger-debug', libTarget)
+else:
+    Alias('csflogger', libTarget)
+
+
+
+
+# Register the csflogger library so as I can link against the library in other builds
+lib_dependencies = []
+linkflags = []
+
+     
+if env.TargetPlatformMatches("ANDROID"):
+    lib_dependencies.append('log')
+    linkflags.append('-llog')
+
+if env.TargetPlatform() in [ "macosx"]:
+    linkflags.append('-install_name @rpath/libcsflogger.dylib')
+
+if envLocal.TargetPlatform() in ['synergylite']:
+    linkflags.append('-Wl,-rpath,' + envLocal.GetBuildDirectory('bin'))
+
+env.RegisterLibrary('csflogger',
+    COMPILE={
+        'CPPPATH': [os.path.abspath("../../include")] #, Dir(macsdk_include).abspath]
+    },
+    LINK={
+        'LIBS': [linkerLib, list(lib_dependencies)],
+        'LIBPATH': lib_path,
+        'LINKFLAGS': linkflags
+    },
+    GET_DLLS = {
+        'DLLS' : [useDllsTarget]
+    },
+    USE_DLLS = {
+        'DLLS' : [useDllsTarget]
+    })
+
+
+Help("""
+Target: csflogger
+        Build the main csflogger library
+        Supported platforms are windows, mac osx, linux, synergylite, and android-arm
+""")
+
+Help("""
+Target: csflogger-debug
+        Build the main csflogger library in debug mode.
+        Supported platforms are windows, mac osx, linux, synergylite, and android-arm
+""")

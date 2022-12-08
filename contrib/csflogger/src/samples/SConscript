@@ -1,0 +1,119 @@
+#######################################################################
+# csflogger sample app build script
+#######################################################################
+
+import os
+import csfenv
+
+Import('env')
+
+envLocal = env.Clone()
+
+if envLocal.get('PCH', None) != None:
+    envLocal.no_pre_compiled_headers()
+
+envLocal.Append(CPPPATH = ['../../include'])
+
+csfloggerRoot = os.getcwd()
+
+sources = []
+sources.append('sample_app.cpp')
+
+if envLocal.TargetPlatformMatches('ANDROID'):
+	envLocal.UseLibrary('csflogger')
+        if envLocal['DEBUG']:
+                envLocal.Append(CPPFLAGS = ['-O0'])
+                envLocal.Append(CPPFLAGS = ['-g'])
+                envLocal.Append(CPPFLAGS = ['-ggdb'])
+                envLocal.Append(CPPDEFINES = ['DEBUG'])
+        else:
+                envLocal.Append(CPPDEFINES = ['NDEBUG'])
+
+        envLocal.Append(CPPFLAGS = ['-Wall'])
+        envLocal.Append(CPPFLAGS = ['-DANDROID'])
+        envLocal.Append(CPPFLAGS = ['-D__ANDROID__'])
+        envLocal.Append(LINKFLAGS = [])
+
+        envLocal.Append(LIBS = ['log'])
+
+
+if envLocal.TargetPlatform() in ["linux", "macosx", "windows", "ios", "iossimulator", "synergylite"]:
+	if envLocal.TargetPlatform() in ["linux", "windows", "synergylite"]:
+		envLocal.UseLibrary('csflogger')
+	
+        if envLocal.TargetPlatformMatches('APPLE'):
+		envLocal.AppendUnique(FRAMEWORKS = ['CoreFoundation'])
+		envLocal.Append(CPPFLAGS = ['-fno-rtti'])
+        	envLocal.Append(CPPFLAGS = ['-fno-common'])
+        	envLocal.Append(CPPDEFINES = ['OSX', 'UNICODE', '_UNICODE'])
+
+	   	if envLocal['DEBUG']:
+        		envLocal.Append(CPPFLAGS = ['-O0'])
+            		envLocal.Append(CPPFLAGS = ['-g'])
+            		envLocal.Append(CPPFLAGS = ['-ggdb'])
+            		envLocal.Append(CPPDEFINES = ['DEBUG'])
+        	else:
+            		envLocal.Append(CPPDEFINES = ['NDEBUG'])
+			envLocal.Append(CPPFLAGS = ['-fast'])
+
+	if envLocal.TargetPlatform() in ["ios", "iossimulator"]:
+                envLocal.Append(LINKFLAGS = ['-ObjC'])
+                envLocal.AppendUnique(FRAMEWORKS = ['Foundation'])
+
+	if envLocal.TargetPlatform() == 'windows':
+		envLocal.Append(CPPFLAGS = ['/EHsc'])
+        	envLocal.Append(CPPFLAGS = ['/W3'])
+       		envLocal.Append(CPPFLAGS = ['/c'])
+        	envLocal.Append(CPPFLAGS = ['/TP'])
+        	envLocal.Append(CPPFLAGS = ['/Zi'])
+        	envLocal.Append(CPPFLAGS = ['/nologo'])
+        	envLocal.Append(CPPFLAGS = ['/errorReport:prompt'])
+        	envLocal.Append(CPPDEFINES = ['WIN32', '_WIN32','_DLL', 'CSF_LOGGER_EXPORTS'])
+        	envLocal.Append(LINKFLAGS = ['/DEBUG'])
+
+	    	if envLocal['DEBUG']:
+        		envLocal.Append(CPPFLAGS = ['/RTC1'])
+        		envLocal.Append(CPPFLAGS = ['/Od'])
+        		envLocal.Append(CPPFLAGS = ['/Gm'])
+        		envLocal.Append(CPPDEFINES = ['DEBUG'])
+        	else:
+            		envLocal.Append(CPPFLAGS = ['/O2'])
+        		envLocal.Append(CPPDEFINES = ['NDEBUG'])
+		
+		envLocal.Append(LIBS = [
+                        	'ws2_32.lib', 
+                        	'DnsAPI.lib', 
+                        	'kernel32.lib', 
+                        	'user32.lib', 
+                        	'gdi32.lib', 
+                        	'winspool.lib', 
+                        	'comdlg32.lib', 
+                        	'advapi32.lib', 
+                        	'shell32.lib', 
+                        	'ole32.lib', 
+                        	'oleaut32.lib',
+                        	'uuid.lib', 
+                        	'odbc32.lib', 
+                        	'odbccp32.lib', 
+                        	'psapi.lib'])
+
+
+exeTarget = envLocal.Program('csflogger-sa', sources)
+
+if envLocal['DEBUG']:
+    Alias('csflogger-sa-debug', exeTarget)
+else:
+    Alias('csflogger-sa', exeTarget)
+
+
+Help("""
+Target: csflogger-sa
+        Build the main csflogger sample app
+        Supported platforms are windows, mac osx, linux, synergylite, and android-arm
+""")
+
+Help("""
+Target: csflogger-sa-debug
+        Build the main csflogger sample app in debug mode.
+        Supported platforms are windows, mac osx, linux, synergylite, and android-arm
+""")

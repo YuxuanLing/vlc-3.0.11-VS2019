@@ -1,0 +1,131 @@
+# ##############################################################################
+# IMPORTS
+# ##############################################################################
+# # Basics
+import os
+import sys
+import SCons
+
+# Import the BuildMonster
+import BuildMonster
+BuildMonster.ValidateRunDirectory()
+import BuildMonsterENV
+from BuildMonsterPackage import *
+import BuildMonsterPackage
+
+PLATFORM = BuildMonster.PLATFORM
+ARCH = BuildMonster.ARCH
+PLATFORM_ARCH = BuildMonster.PLATFORM_ARCH
+
+def BuildLbirary(buildmode):
+    # Get our own environment.
+    env=BuildMonsterENV.GenerateENV(buildmode=buildmode)
+    extralibs=[]
+    DEPENDS=[]
+
+    includepath=BuildMonster.RepoPath(buildmode, subtype="include")+'/csflogger'
+    HEADER_FILES_PUBLISH=env.PublishHeaders(includepath + '/csf/logger/', HEADER_FILES)
+    Depends(SOURCE_FILES, HEADER_FILES_PUBLISH)
+    privateincludepaths=[Dir('./include')]
+
+    # Check mode
+    if buildmode in ['Debug']:
+        env.Append(CPPDEFINES=['DEBUG'])
+
+    # Check latform
+    if PLATFORM in ['win32']:
+        env.AppendUnique(CPPDEFINES=['_DLL', 'CSF_LOGGER_EXPORTS', 'STUB_ONLY=1', '__NEED_PRECOMPILE_FILE__', '_UNICODE', 'UNICODE'])
+
+    if PLATFORM_ARCH in ['linux2-x86', 'linux2-x86_64']:
+        extralibs+=['dl', 'pthread']
+        env.Append(CCFLAGS=['-pthread'])
+        env.Append(LINKFLAGS=['-Wl,-soname,${SHLIBPREFIX}csflogger${SHLIBSUFFIX}'])
+
+    if PLATFORM in ['android']:
+        extralibs+=['log']
+        env.Append(LINKFLAGS=['-Wl,-soname,${SHLIBPREFIX}csflogger${SHLIBSUFFIX}'])
+
+    if PLATFORM in ['darwin']:
+        env.Append(LINKFLAGS=['-framework', 'CoreFoundation'])
+        env.Append(LINKFLAGS=['-framework', 'Foundation'])
+
+    if BuildMonster.IsStaticLink():
+        env.AppendUnique(LINKFLAGS=["-shared",])
+
+    # Build into target
+    if PLATFORM_ARCH in ['darwin-i386', 'darwin-i386_64', 'darwin-arm', 'darwin-arm64']:
+        LIB=env.CPVEStaticLibrary(
+            target="$SHLIBPREFIXcsflogger$SHLIBSUFFIX",
+            source=SOURCE_FILES,
+            packagename="csflogger",
+            packagedepends=DEPENDS,
+            includefiles=HEADER_FILES_PUBLISH,
+            includepaths=includepath,
+            privateincludepaths=privateincludepaths,
+            extralibs=extralibs,
+            extrasource=HEADER_FILES,
+            )
+    else:
+        LIB=env.CPVESharedLibrary(
+            target="$SHLIBPREFIXcsflogger$SHLIBSUFFIX",
+            source=SOURCE_FILES,
+            packagename="csflogger",
+            packagedepends=DEPENDS,
+            includefiles=HEADER_FILES_PUBLISH,
+            includepaths=includepath,
+            privateincludepaths=privateincludepaths,
+            extralibs=extralibs,
+            importlib=True,
+            extrasource=HEADER_FILES,
+            )
+    return
+
+SOURCE_FILE_NAMES=[
+    './src/CSFLog.cpp',
+    './src/VersionInfo.cpp',
+    './src/logger_utils.cpp',
+    './src/CSFLogger.cpp',
+    './src/LogController.cpp',
+    './src/FileSystem.cpp',
+    './src/BasicFileAppender.cpp',
+    './src/Rollover.cpp',
+    './src/BufferedAppender.cpp',
+    './src/utils/Mutex.cpp',
+    './src/FileAppender.cpp',
+    './src/DefaultFormatter.cpp',
+    './src/Configuration.cpp',
+    './src/FileUtils.cpp',
+    './src/FileSystemProvider.cpp',
+	'./src/StringUtils.cpp',
+    './src/utils/ScopedLock.cpp',
+    './src/utils/ScopedUnlock.cpp',
+	'./src/utils/FormattedTimeUtils.cpp',
+    './src/ConsoleLogAppender.cpp',
+    './src/NSLogAppender.cpp',
+]
+
+if PLATFORM in ['android']:
+    SOURCE_FILE_NAMES +=[
+    './src/AndroidLogCatFormatter.cpp',
+    './src/AndroidLogCatAppender.cpp',
+    './src/main/android/CSFLogHelper.cpp',]
+
+if PLATFORM in ['darwin']:
+    SOURCE_FILE_NAMES +=[
+    './src/ObjCHelpers.mm',]
+
+SOURCE_FILES=[File(F) for F in SOURCE_FILE_NAMES]
+HEADER_FILE_NAMES=[
+    './include/csf/logger/CSFCustomAssert.h',
+    './include/csf/logger/CSFLog.h',
+    './include/csf/logger/CSFLogger.h',
+    './include/csf/logger/CSFLogger.hpp',
+    './include/csf/logger/CSFLoggerCommon.h',
+    './include/csf/logger/VersionInfo.hpp',
+    ]
+
+HEADER_FILES=[File(F) for F in HEADER_FILE_NAMES]
+
+for M in BuildMonster.BuildModeList:
+    BuildLbirary(M)
+

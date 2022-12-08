@@ -1,0 +1,153 @@
+#######################################################################
+# csflogger library build script
+#######################################################################
+import os
+
+Import('env')
+
+envLocal = env.Clone()
+
+envLocal.Append(CPPPATH = ['../include'])
+envLocal.Append(CPPPATH = ['.'])
+
+if 'VDI_THIN_CLIENT' not in Flatten(envLocal['CPPDEFINES']) and 'CISCO_VDI_HVD_AGENT' not in Flatten(envLocal['CPPDEFINES']):
+    envLocal.UseLibrary('ciscossl')
+
+csfloggerRoot = os.getcwd()
+
+_SDKNAMES = {
+    'iossimulator': 'iPhoneSimulator',
+    'ios': 'iPhoneOS'
+
+}
+
+sources = []
+sources.append('CSFLog.cpp')
+sources.append('VersionInfo.cpp')
+sources.append('logger_utils.cpp')
+sources.append('CSFLogger.cpp')
+sources.append('LogController.cpp')
+sources.append('FileSystem.cpp')
+sources.append('BasicFileAppender.cpp')
+sources.append('Rollover.cpp')
+sources.append('BufferedAppender.cpp')
+sources.append('utils/Mutex.cpp')
+sources.append('FileAppender.cpp')
+sources.append('DefaultFormatter.cpp')
+sources.append('Configuration.cpp')
+sources.append('FileUtils.cpp')
+sources.append('FileSystemProvider.cpp')
+sources.append('StringUtils.cpp')
+sources.append('utils/ScopedLock.cpp')
+sources.append('utils/ScopedUnlock.cpp')
+sources.append('utils/FormattedTimeUtils.cpp')
+if env.TargetPlatform() in [ "android"]:
+    sources.append('AndroidLogCatFormatter.cpp')
+    sources.append('AndroidLogCatAppender.cpp')
+#    sources.append('main/android/CSFLogHelper.cpp')
+sources.append('ConsoleLogAppender.cpp')
+sources.append('NSLogAppender.cpp')
+# sources.append('utils/ThreadPool.cpp')
+# sources.append('utils/Event.cpp')
+# sources.append('utils/Runnable.cpp')
+# sources.append('utils/csf_predicates.cpp')
+
+# if envLocal.TargetPlatform() == "windows": 
+#     sources.append('utils/Win32Condition.cpp')
+#     sources.append('utils/Win32Thread.cpp')
+# else:
+#     sources.append('utils/PosixCondition.cpp')
+#     sources.append('utils/PosixThread.cpp')
+
+lib_path = []
+
+if envLocal.TargetPlatform() in ['macosx','ios','iossimulator']:
+    sources.append('ObjCHelpers.mm')
+    envLocal.set_warning_flags()
+    envLocal.Append(LINKFLAGS = ['-framework','CoreFoundation','-framework','Foundation'])
+
+if envLocal.TargetPlatform() == "windows":   
+    envLocal.Append(CPPDEFINES = ['_DLL', 'CSF_LOGGER_EXPORTS'])
+
+lib_dependencies = []
+linkflags = []
+
+if(GetOption('forceInitFileAppender')) :
+    envLocal.Append(CPPDEFINES =['FORCE_LOGGER_INIT_FILEAPPENDER'])
+
+if envLocal.TargetPlatform() == 'windows':
+    
+    sharedLib = envLocal.SharedLibrary("csflogger", sources)
+
+    linkerLib = File(envLocal.GetBuildDirectory('sharedlib',"csflogger.lib", False))
+    
+    useDllsTarget = sharedLib[0]
+    
+    libTarget = sharedLib
+   
+elif envLocal.TargetPlatform() in ['linux', 'synergylite']:
+    if envLocal['JcfReflection']:
+        envLocal.Append(CPPDEFINES = ['JETS_CLIENT'])
+    libTarget = envLocal.SharedLibrary("csflogger", sources)
+    linkerLib = ['csflogger']
+    lib_path = [envLocal.GetBuildDirectory('sharedlib')]
+    useDllsTarget = linkerLib[0]
+    envLocal.Append(LINKFLAGS = '-Wl,-soname,${SHLIBPREFIX}csflogger${SHLIBSUFFIX}')
+
+elif env.TargetPlatform() in [ "macosx"]:
+    envLocal.Append(LINKFLAGS = '-install_name @rpath/libcsflogger.dylib')
+    linkerLib = envLocal.SharedLibrary("csflogger", sources)
+    libTarget = linkerLib
+    useDllsTarget = linkerLib[0]
+
+elif env.TargetPlatform() in [ "android"]:
+    envLocal.Append(LINKFLAGS = '-v -Wl,-soname,${SHLIBPREFIX}csflogger${SHLIBSUFFIX}')
+    libTarget = envLocal.SharedLibrary("csflogger", sources)
+    linkerLib = libTarget #['csflogger']
+    envLocal.Append(LINKFLAGS = '-Wl,--gc-sections -Wl,--whole-archive -llog -Wl,--no-whole-archive') 
+    lib_path = [envLocal.GetBuildDirectory('sharedlib')]
+    useDllsTarget = linkerLib[0]
+
+elif envLocal.TargetPlatform() in ['ios','iossimulator']:
+    linkerLib = envLocal.StaticLibrary('csflogger', sources)
+    libTarget = linkerLib
+    useDllsTarget = [] #There are no useLibs for non windows static libs
+    envLocal.Append(CPPDEFINES = ['IOS'])
+
+if envLocal['DEBUG']:
+    envLocal.Append(CPPDEFINES =['DEBUG'])
+    Alias('csflogger-debug', libTarget)
+else:
+    Alias('csflogger', libTarget)
+
+if envLocal.TargetPlatform() in ['synergylite']:
+    linkflags.append('-Wl,-rpath,' + envLocal.GetBuildDirectory('bin'))
+
+env.RegisterLibrary('csflogger',
+    COMPILE={
+        'CPPPATH': [os.path.abspath("../include")] #, Dir(macsdk_include).abspath]
+    },
+    LINK={
+        'LIBS': [linkerLib, list(lib_dependencies)],
+        'LIBPATH': lib_path,
+        'LINKFLAGS': linkflags
+    },
+    GET_DLLS = {
+        'DLLS' : [useDllsTarget]
+    },
+    USE_DLLS = {
+        'DLLS' : [useDllsTarget]
+    })
+
+
+Help("""
+Target: csflogger
+        Build the main csflogger library
+        Supported platforms are windows, mac osx, linux, synergylite, and android-arm
+""")
+
+Help("""
+Target: csflogger-debug
+        Build the main csflogger library in debug mode.
+        Supported platforms are windows, mac osx, linux, synergylite, and android-arm
+""")

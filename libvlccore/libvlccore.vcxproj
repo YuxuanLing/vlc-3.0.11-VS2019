@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../vlc-3.0.11/src;../include/x64;../include/util;../vlc-3.0.11/include;../include/contrib;$(SolutionDir)include/mingw32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../vlc-3.0.11/src;../include/x64;../include/util;../vlc-3.0.11/include;../include/contrib;$(SolutionDir)include/mingw32;$(SolutionDir)contrib/csflogger/include</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
@@ -134,7 +134,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)libs\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcompat.lib;Ws2_32.lib;Iphlpapi.lib;Normaliz.lib;Synchronization.lib;libiconv.a;libintl.a;libgcc.a;libgcrypt.a;libgpg-error.a;legacy_stdio_definitions.lib;libmingwex.a;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csflogger.lib;libcompat.lib;Ws2_32.lib;Iphlpapi.lib;Normaliz.lib;Synchronization.lib;libiconv.a;libintl.a;libgcc.a;libgcrypt.a;libgpg-error.a;legacy_stdio_definitions.lib;libmingwex.a;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>./libvlccore.def</ModuleDefinitionFile>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>

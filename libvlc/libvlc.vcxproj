@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../vlc-3.0.11/lib;../include/x64;../include/util;../vlc-3.0.11/include;$(SolutionDir)include/mingw32;$(SolutionDir)include/contrib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../vlc-3.0.11/lib;../include/x64;../include/util;../vlc-3.0.11/include;$(SolutionDir)include/mingw32;$(SolutionDir)include/contrib;$(SolutionDir)contrib/csflogger/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
@@ -132,7 +132,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>libcompat.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csflogger.lib;libcompat.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>./libvlc.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)vlc/$(TargetName)$(TargetExt)</OutputFile>

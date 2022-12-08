@@ -42,6 +42,9 @@
 #include <d3d9.h>
 #include "../../video_chroma/d3d9_fmt.h"
 #include "log_level_time.h"
+#include "csf/logger/CSFLogger.h"
+#include "csf/logger/CSFLog.h"
+
 struct filter_sys_t {
     /* GPU to CPU */
     copy_cache_t      cache;
@@ -79,7 +82,8 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
 {
     copy_cache_t *p_copy_cache = (copy_cache_t*) p_filter->p_sys;
     picture_sys_t *p_sys = &((struct va_pic_context *)src->context)->picsys;
-
+    CSFLogger_initialize("c:\\dump\\Log\\dxa9.log");
+    CSFLogger* dxa9Logger = CSFLogger_getLogger("dxa9");
     D3DSURFACE_DESC desc;
     D3DLOCKED_RECT lock;
     if (!GetLock(p_filter, p_sys->surface, &lock, &desc))
@@ -133,6 +137,7 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
             lock.Pitch,
         };
         LOG_WRITE("c:\\dump\\dxa9.txt", "before Copy420_SP_to_P");
+        CSFLogDebug(dxa9Logger, "Before Copy420_SP_to_P !");
         if (desc.Format == MAKEFOURCC('N','V','1','2'))
             Copy420_SP_to_P(dst, plane, pitch,
                             __MIN(desc.Height, src->format.i_y_offset + src->format.i_visible_height),
@@ -142,6 +147,7 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
                               __MIN(desc.Height, src->format.i_y_offset + src->format.i_visible_height),
                               6, p_copy_cache);
         LOG_WRITE("c:\\dump\\dxa9.txt", "after Copy420_SP_to_P");
+        CSFLogDebug(dxa9Logger, "After Copy420_SP_to_P !");
         if (dst->format.i_chroma != VLC_CODEC_I420 && dst->format.i_chroma != VLC_CODEC_I420_10L)
             picture_SwapUV(dst);
     } else {

@@ -19,45 +19,75 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\module.rc" />
+    <ClCompile Include="..\..\src\BasicFileAppender.cpp" />
+    <ClCompile Include="..\..\src\BufferedAppender.cpp" />
+    <ClCompile Include="..\..\src\Configuration.cpp" />
+    <ClCompile Include="..\..\src\ConsoleLogAppender.cpp" />
+    <ClCompile Include="..\..\src\CSFLog.cpp" />
+    <ClCompile Include="..\..\src\CSFLogger.cpp" />
+    <ClCompile Include="..\..\src\DefaultFormatter.cpp" />
+    <ClCompile Include="..\..\src\FileAppender.cpp" />
+    <ClCompile Include="..\..\src\FileSystem.cpp" />
+    <ClCompile Include="..\..\src\FileSystemProvider.cpp" />
+    <ClCompile Include="..\..\src\FileUtils.cpp" />
+    <ClCompile Include="..\..\src\LogController.cpp" />
+    <ClCompile Include="..\..\src\logger_utils.cpp" />
+    <ClCompile Include="..\..\src\NSLogAppender.cpp" />
+    <ClCompile Include="..\..\src\Rollover.cpp" />
+    <ClCompile Include="..\..\src\StringUtils.cpp" />
+    <ClCompile Include="..\..\src\utils\FormattedTimeUtils.cpp" />
+    <ClCompile Include="..\..\src\utils\Mutex.cpp" />
+    <ClCompile Include="..\..\src\utils\ScopedLock.cpp" />
+    <ClCompile Include="..\..\src\utils\ScopedUnlock.cpp" />
+    <ClCompile Include="..\..\src\VersionInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\log_level_time.c" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\video_chroma\copy.c" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\video_chroma\d3d9_fmt.c" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\video_filter\deinterlace\common.c" />
-    <ClCompile Include="..\..\dllmain.cpp" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\d3d9_filters.c" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\dxva2_deinterlace.c" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\dxa9.c" />
-    <ClCompile Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\d3d9_instance.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\vlc-3.0.11\modules\hw\d3d9\log_level_time.h" />
+    <ClInclude Include="..\..\include\csf\logger\BasicFileAppender.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\BufferedAppender.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\Configuration.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\ConsoleLogAppender.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\CSFCustomAssert.h" />
+    <ClInclude Include="..\..\include\csf\logger\CSFLog.h" />
+    <ClInclude Include="..\..\include\csf\logger\CSFLogger.h" />
+    <ClInclude Include="..\..\include\csf\logger\CSFLogger.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\CSFLoggerAndroid.h" />
+    <ClInclude Include="..\..\include\csf\logger\CSFLoggerCommon.h" />
+    <ClInclude Include="..\..\include\csf\logger\DefaultFormatter.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\FileAppender.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\FileSystem.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\FileSystemProvider.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\FileUtils.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\LogAppenderType.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\LogController.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\LoggerDefaults.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\NSLogAppender.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\Rollover.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\StringUtils.hpp" />
+    <ClInclude Include="..\..\include\csf\logger\VersionInfo.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{40C13343-47D0-4D68-AC34-CFBB20094045}</ProjectGuid>
-    <RootNamespace>direct3d9_filters</RootNamespace>
+    <ProjectGuid>{07db8812-e438-4360-902d-853403a04640}</ProjectGuid>
+    <RootNamespace>csflogger</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -70,8 +100,10 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings" />
-  <ImportGroup Label="Shared" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -101,15 +133,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;IDUMMY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -118,39 +148,29 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;IDUMMY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;__PLUGIN__;HAVE_CONFIG_H;_CRT_NONSTDC_NO_DEPRECATE;DIRECT3D9_FILTERS_EXPORTS;MODULE_STRING="direct3d9_filters";MODULE_NAME=direct3d9_filters;MODULE_NAME_IS_direct3d9_filters;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CSF_LOGGER_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)vlc-3.0.11/include;$(SolutionDir)include/$(Platform);$(SolutionDir)include/util;./;$(SolutionDir)include/contrib;$(SolutionDir)include/mingw32;$(SolutionDir)contrib/csflogger/include</AdditionalIncludeDirectories>
-      <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>csflogger.lib;libcompat.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)libs\$(Platform)\</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)vlc/plugins/hw/lib$(ProjectName)_plugin$(TargetExt)</OutputFile>
-      <ModuleDefinitionFile>../../plugins.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,19 +179,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;IDUMMY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);CSF_LOGGER_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

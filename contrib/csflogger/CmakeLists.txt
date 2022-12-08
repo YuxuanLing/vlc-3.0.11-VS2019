@@ -1,0 +1,48 @@
+# minimum required cmake version
+cmake_minimum_required( VERSION 3.5 FATAL_ERROR )
+
+PROJECT(csflogger)
+
+
+include_directories( "include" )
+
+#add_subdirectory( "src" )
+#add_subdirectory( "src/utils" )
+#add_subdirectory( "src/samples" )
+
+
+add_definitions(-D_WIN32 -D_DLL)
+add_definitions(-DCSF_LOGGER_EXPORTS)
+add_definitions(-DUNICODE -D_UNICODE)
+
+##set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+##set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
+set(libfilenames
+    src/CSFLog.cpp
+	src/CSFLog.cpp 
+    src/VersionInfo.cpp 
+    src/logger_utils.cpp 
+    src/CSFLogger.cpp 
+    src/LogController.cpp 
+    src/FileSystem.cpp 
+    src/BasicFileAppender.cpp 
+    src/Rollover.cpp 
+    src/BufferedAppender.cpp 
+    src/utils/Mutex.cpp 
+    src/FileAppender.cpp 
+    src/DefaultFormatter.cpp 
+    src/Configuration.cpp 
+    src/FileUtils.cpp 
+    src/FileSystemProvider.cpp 
+	src/StringUtils.cpp 
+    src/utils/ScopedLock.cpp 
+    src/utils/ScopedUnlock.cpp 
+	src/utils/FormattedTimeUtils.cpp 
+    src/ConsoleLogAppender.cpp 
+    src/NSLogAppender.cpp 
+	src/samples/sample_app.cpp
+	)
+
+add_executable(csflogger ${libfilenames})
+	

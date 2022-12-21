@@ -7,7 +7,7 @@ namespace CSF
 {
 	namespace csflogger
 	{
-		class Formatter
+		class CSF_LOGGER_API Formatter
 		{
 		public:
             virtual ~Formatter() { }

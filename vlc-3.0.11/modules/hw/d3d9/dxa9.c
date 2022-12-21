@@ -82,7 +82,7 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
 {
     copy_cache_t *p_copy_cache = (copy_cache_t*) p_filter->p_sys;
     picture_sys_t *p_sys = &((struct va_pic_context *)src->context)->picsys;
-    CSFLogger_initialize("c:\\dump\\Log\\dxa9.log");
+    //CSFLogger_initialize("c:\\dump\\Log\\dxa9.log");
     CSFLogger* dxa9Logger = CSFLogger_getLogger("dxa9");
     D3DSURFACE_DESC desc;
     D3DLOCKED_RECT lock;
